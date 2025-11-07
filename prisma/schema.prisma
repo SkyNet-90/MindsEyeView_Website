@@ -1,0 +1,75 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Event {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?  @db.Text
+  venue       String
+  address     String?  @db.Text
+  eventDate   DateTime @map("event_date")
+  endDate     DateTime? @map("end_date")
+  ticketUrl   String?  @map("ticket_url") @db.VarChar(500)
+  isAcoustic  Boolean  @default(false) @map("is_acoustic")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@index([eventDate])
+  @@map("events")
+}
+
+model Photo {
+  id            Int      @id @default(autoincrement())
+  title         String?
+  description   String?  @db.Text
+  filename      String
+  filePath      String   @map("file_path") @db.VarChar(500)
+  thumbnailPath String?  @map("thumbnail_path") @db.VarChar(500)
+  uploadedBy    String?  @map("uploaded_by")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("photos")
+}
+
+model Video {
+  id           Int      @id @default(autoincrement())
+  title        String
+  description  String?  @db.Text
+  youtubeUrl   String   @map("youtube_url") @db.VarChar(500)
+  youtubeId    String   @map("youtube_id") @db.VarChar(50)
+  isAcoustic   Boolean  @default(false) @map("is_acoustic")
+  displayOrder Int      @default(0) @map("display_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([displayOrder])
+  @@map("videos")
+}
+
+model Subscriber {
+  id                Int      @id @default(autoincrement())
+  email             String   @unique
+  name              String?
+  subscribedAt      DateTime @default(now()) @map("subscribed_at")
+  isActive          Boolean  @default(true) @map("is_active")
+  unsubscribeToken  String?  @unique @map("unsubscribe_token") @db.VarChar(100)
+
+  @@index([email])
+  @@map("subscribers")
+}
+
+model AdminUser {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  passwordHash String    @map("password_hash")
+  name         String?
+  createdAt    DateTime  @default(now()) @map("created_at")
+  lastLogin    DateTime? @map("last_login")
+
+  @@map("admin_users")
+}
