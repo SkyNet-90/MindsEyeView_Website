@@ -2,7 +2,7 @@
 -- Based on videos from client information folder
 
 -- Full Band Videos
-INSERT INTO "Video" (title, description, youtube_url, youtube_id, is_acoustic, display_order, created_at)
+INSERT INTO "videos" (title, description, youtube_url, youtube_id, is_acoustic, display_order, created_at)
 VALUES
   ('Brown Eyed Girl - Mind''s Eye View', 'Live performance of Brown Eyed Girl', 'https://www.youtube.com/watch?v=2Oxycuh_tPI', '2Oxycuh_tPI', false, 1, NOW()),
   ('Mind''s Eye View - Live Performance', 'Live band performance', 'https://www.youtube.com/watch?v=e2jAxUtMTkY', 'e2jAxUtMTkY', false, 2, NOW()),
@@ -14,4 +14,4 @@ VALUES
 ON CONFLICT DO NOTHING;
 
 -- Show all videos
-SELECT id, title, youtube_id, is_acoustic, display_order FROM "Video" ORDER BY is_acoustic, display_order;
+SELECT id, title, youtube_id, is_acoustic, display_order FROM "videos" ORDER BY is_acoustic, display_order;
