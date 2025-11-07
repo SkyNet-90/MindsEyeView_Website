@@ -12,37 +12,50 @@ export const authOptions: NextAuthOptions = {
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        try {
+          if (!credentials?.email || !credentials?.password) {
+            console.log('Missing credentials')
+            return null
+          }
+
+          console.log('Attempting login for:', credentials.email)
+
+          const user = await prisma.adminUser.findUnique({
+            where: { email: credentials.email },
+          })
+
+          if (!user) {
+            console.log('User not found:', credentials.email)
+            return null
+          }
+
+          console.log('User found, verifying password...')
+          
+          const isValid = await bcrypt.compare(
+            credentials.password,
+            user.passwordHash
+          )
+
+          console.log('Password valid:', isValid)
+
+          if (!isValid) {
+            return null
+          }
+
+          // Update last login
+          await prisma.adminUser.update({
+            where: { id: user.id },
+            data: { lastLogin: new Date() },
+          })
+
+          return {
+            id: user.id.toString(),
+            email: user.email,
+            name: user.name,
+          }
+        } catch (error) {
+          console.error('Auth error:', error)
           return null
-        }
-
-        const user = await prisma.adminUser.findUnique({
-          where: { email: credentials.email },
-        })
-
-        if (!user) {
-          return null
-        }
-
-        const isValid = await bcrypt.compare(
-          credentials.password,
-          user.passwordHash
-        )
-
-        if (!isValid) {
-          return null
-        }
-
-        // Update last login
-        await prisma.adminUser.update({
-          where: { id: user.id },
-          data: { lastLogin: new Date() },
-        })
-
-        return {
-          id: user.id.toString(),
-          email: user.email,
-          name: user.name,
         }
       },
     }),
