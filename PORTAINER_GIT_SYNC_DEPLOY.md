@@ -16,6 +16,34 @@ This deployment method mirrors your resume website setup with automatic git-sync
 1. Portainer running on your home lab
 2. Cloudflare Tunnel token
 3. Docker with access to Docker socket
+4. **For private repos only**: GitHub Personal Access Token (see below)
+
+## 🔐 Private Repository Setup (Optional)
+
+If your GitHub repository is **private**, you'll need a Personal Access Token:
+
+### Create GitHub Token:
+
+1. Go to: https://github.com/settings/tokens
+2. Click: **Generate new token** → **Generate new token (classic)**
+3. Name it: `Portainer Git Sync`
+4. Set expiration: **No expiration** (or your preference)
+5. Select scope: ✅ **repo** (Full control of private repositories)
+6. Click: **Generate token**
+7. **Copy the token immediately** - you won't see it again!
+
+Example token: `ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx`
+
+### Add to Environment Variables:
+
+When deploying in Portainer (Step 3), add this additional environment variable:
+
+```
+Name: GITHUB_TOKEN
+Value: ghp_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+```
+
+**For public repos**: Skip this entirely - no token needed!
 
 ## 🚀 Deployment Steps
 
@@ -63,6 +91,7 @@ echo "NEXTAUTH_SECRET=$(openssl rand -base64 32)"
 5. **Environment variables** (scroll down):
    Click "Add an environment variable" for each:
    
+   **Required for all deployments:**
    ```
    Name: DB_PASSWORD
    Value: [paste the generated password]
@@ -73,6 +102,14 @@ echo "NEXTAUTH_SECRET=$(openssl rand -base64 32)"
    Name: CF_TUNNEL_TOKEN
    Value: [paste your Cloudflare tunnel token]
    ```
+   
+   **Only for private repositories:**
+   ```
+   Name: GITHUB_TOKEN
+   Value: [paste your GitHub personal access token]
+   ```
+   
+   ⚠️ **Important**: If repo is public, do NOT add GITHUB_TOKEN
 
 6. **Click**: Deploy the stack
 

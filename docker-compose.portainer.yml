@@ -61,17 +61,31 @@ services:
       - GIT_BRANCH=main
       - SYNC_INTERVAL=300
       - GHCR_IMAGE=ghcr.io/skynet-90/mindseyeview_website:latest
+      # For private repos, uncomment and set these:
+      # - GITHUB_TOKEN=${GITHUB_TOKEN}
+      # - GITHUB_USERNAME=SkyNet-90
     command: >
       sh -c '
         echo "🚀 Starting git-sync for Mind'\''s Eye View deployment...";
         apk add --no-cache docker-cli curl;
+        
+        # Set up git credentials for private repos if token provided
+        if [ -n "$GITHUB_TOKEN" ]; then
+          echo "🔐 Configuring git credentials for private repo...";
+          git config --global credential.helper store;
+          echo "https://$GITHUB_USERNAME:$GITHUB_TOKEN@github.com" > ~/.git-credentials;
+          # Replace https:// URL with authenticated version
+          AUTH_REPO=$(echo "$GIT_REPO" | sed "s|https://|https://$GITHUB_USERNAME:$GITHUB_TOKEN@|");
+        else
+          AUTH_REPO="$GIT_REPO";
+        fi;
         
         # Initialize repository
         cd /repo;
         if [ ! -d ".git" ]; then
           echo "📥 Cloning repository...";
           rm -rf /repo/* /repo/.* 2>/dev/null || true;
-          git clone "$GIT_REPO" /tmp/clone || exit 1;
+          git clone "$AUTH_REPO" /tmp/clone || exit 1;
           cp -r /tmp/clone/* /repo/;
           cp -r /tmp/clone/.git /repo/;
           rm -rf /tmp/clone;
