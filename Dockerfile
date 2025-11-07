@@ -15,9 +15,24 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Set environment variables for build
-ENV NEXT_TELEMETRY_DISABLED 1
+# Copy Prisma schema
+COPY prisma ./prisma/
 
+# Set build-time environment variables
+# These are needed for Next.js build but won't be in the final image
+ENV NEXT_TELEMETRY_DISABLED 1
+ENV NODE_ENV production
+
+# Dummy values for build - real values come from runtime environment
+ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
+ENV NEXTAUTH_URL="http://localhost:3000"
+ENV NEXTAUTH_SECRET="build-time-secret-replace-at-runtime"
+ENV NEXT_PUBLIC_FACEBOOK_URL="https://www.facebook.com"
+
+# Generate Prisma Client
+RUN npx prisma generate
+
+# Build the application
 RUN npm run build
 
 # Production image, copy all the files and run next
@@ -40,6 +55,11 @@ RUN chown nextjs:nodejs .next
 # Automatically leverage output traces to reduce image size
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy Prisma files for runtime
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
+COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
+COPY --from=builder /app/prisma ./prisma
 
 # Create uploads directory
 RUN mkdir -p /app/public/uploads
