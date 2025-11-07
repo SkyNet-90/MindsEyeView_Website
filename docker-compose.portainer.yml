@@ -1,0 +1,183 @@
+version: '3.8'
+
+services:
+  mindseyeview-app:
+    image: ghcr.io/skynet-90/mindseyeview_website:latest
+    container_name: mindseyeview-web
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://mindseyeview:${DB_PASSWORD}@mindseyeview-db:5432/mindseyeview
+      - NEXTAUTH_URL=https://mindseyeview.net
+      - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
+      - NEXT_PUBLIC_FACEBOOK_URL=https://www.facebook.com/profile.php?id=100066853654284
+      - TZ=America/New_York
+    volumes:
+      - uploads_data:/app/public/uploads
+    depends_on:
+      mindseyeview-db:
+        condition: service_healthy
+      git-sync:
+        condition: service_started
+    networks:
+      - mindseyeview-net
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  mindseyeview-db:
+    image: postgres:15-alpine
+    container_name: mindseyeview-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=mindseyeview
+      - POSTGRES_USER=mindseyeview
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - TZ=America/New_York
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - mindseyeview-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U mindseyeview"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  git-sync:
+    image: alpine/git:latest
+    container_name: mindseyeview-git-sync
+    restart: unless-stopped
+    volumes:
+      - git_repo:/repo
+    environment:
+      - GIT_REPO=https://github.com/SkyNet-90/MindsEyeView_Website.git
+      - GIT_BRANCH=main
+      - SYNC_INTERVAL=300
+      - GHCR_IMAGE=ghcr.io/skynet-90/mindseyeview_website:latest
+    command: >
+      sh -c '
+        echo "🚀 Starting git-sync for Mind'\''s Eye View deployment...";
+        apk add --no-cache docker-cli curl;
+        
+        # Initialize repository
+        cd /repo;
+        if [ ! -d ".git" ]; then
+          echo "📥 Cloning repository...";
+          rm -rf /repo/* /repo/.* 2>/dev/null || true;
+          git clone "$GIT_REPO" /tmp/clone || exit 1;
+          cp -r /tmp/clone/* /repo/;
+          cp -r /tmp/clone/.git /repo/;
+          rm -rf /tmp/clone;
+          cd /repo;
+          git checkout "$GIT_BRANCH" || echo "Already on $GIT_BRANCH";
+        fi;
+        
+        echo "✅ Initial setup completed. Starting sync loop...";
+        
+        # Sync loop
+        while true; do
+          sleep $SYNC_INTERVAL;
+          echo "🔄 Checking for updates at $(date)";
+          
+          cd /repo;
+          
+          # Get current commit
+          BEFORE=$(git rev-parse HEAD 2>/dev/null || echo "none");
+          
+          # Safely fetch and update
+          git fetch origin || (echo "Fetch failed, continuing..." && continue);
+          
+          # Get the latest commit from origin
+          LATEST=$(git rev-parse "origin/$GIT_BRANCH" 2>/dev/null || echo "none");
+          
+          if [ "$BEFORE" != "$LATEST" ] && [ "$LATEST" != "none" ]; then
+            echo "📦 New changes detected!";
+            echo "Current: $BEFORE";
+            echo "Latest:  $LATEST";
+            
+            # Reset to latest
+            git reset --hard "origin/$GIT_BRANCH" || continue;
+            
+            # Pull latest Docker image from GHCR
+            echo "🐳 Pulling latest Docker image...";
+            docker pull "$GHCR_IMAGE" || (echo "Failed to pull image" && continue);
+            
+            # Restart the application container to use new image
+            echo "🔄 Restarting application...";
+            docker restart mindseyeview-web || (echo "Failed to restart container" && continue);
+            
+            echo "✅ Successfully deployed new version!";
+          else
+            echo "ℹ️  No changes detected";
+          fi;
+        done
+      '
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - mindseyeview-net
+    healthcheck:
+      test: ["CMD", "test", "-d", "/repo/.git"]
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  cloudflared-mindseyeview:
+    image: cloudflare/cloudflared:latest
+    container_name: cloudflared-mindseyeview
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run --token ${CF_TUNNEL_TOKEN}
+    environment:
+      - TUNNEL_TOKEN=${CF_TUNNEL_TOKEN}
+    depends_on:
+      - mindseyeview-app
+    networks:
+      - mindseyeview-net
+    healthcheck:
+      test: ["CMD", "pgrep", "cloudflared"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  filebrowser:
+    image: filebrowser/filebrowser:latest
+    container_name: mindseyeview-filebrowser
+    restart: unless-stopped
+    ports:
+      - "8083:80"
+    volumes:
+      - uploads_data:/srv/uploads:ro
+      - git_repo:/srv/git:ro
+      - filebrowser_db:/database
+    environment:
+      - FB_BASEURL=/
+      - FB_NOAUTH=false
+    networks:
+      - mindseyeview-net
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  postgres_data:
+    driver: local
+  uploads_data:
+    driver: local
+  git_repo:
+    driver: local
+  filebrowser_db:
+    driver: local
+
+networks:
+  mindseyeview-net:
+    driver: bridge
