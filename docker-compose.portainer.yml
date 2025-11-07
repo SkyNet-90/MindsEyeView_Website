@@ -17,31 +17,43 @@ services:
     command: >
       sh -c "
         echo '🔧 Initializing database...';
-        npm run db:push || exit 1;
-        echo '👤 Creating admin user if not exists...';
-        node -e \"
-          const { PrismaClient } = require('@prisma/client');
-          const bcrypt = require('bcryptjs');
+        npm run db:push && echo '✅ Database schema created' || exit 1;
+        echo '👤 Checking for admin user...';
+        node -e '
+          const { PrismaClient } = require(\"@prisma/client\");
+          const bcrypt = require(\"bcryptjs\");
           const prisma = new PrismaClient();
-          (async () => {
-            const existing = await prisma.adminUser.findUnique({ where: { email: process.env.ADMIN_EMAIL } });
-            if (!existing) {
-              const hash = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
-              await prisma.adminUser.create({
-                data: {
-                  email: process.env.ADMIN_EMAIL,
-                  name: process.env.ADMIN_NAME,
-                  passwordHash: hash
-                }
+          
+          async function createAdmin() {
+            try {
+              const email = process.env.ADMIN_EMAIL;
+              const existing = await prisma.adminUser.findUnique({ 
+                where: { email: email } 
               });
-              console.log('✅ Admin user created:', process.env.ADMIN_EMAIL);
-            } else {
-              console.log('ℹ️  Admin user already exists');
+              
+              if (!existing) {
+                const hash = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
+                await prisma.adminUser.create({
+                  data: {
+                    email: email,
+                    name: process.env.ADMIN_NAME,
+                    passwordHash: hash
+                  }
+                });
+                console.log(\"✅ Admin user created:\", email);
+              } else {
+                console.log(\"ℹ️  Admin user already exists:\", email);
+              }
+            } catch (error) {
+              console.error(\"Error creating admin:\", error);
+              process.exit(1);
+            } finally {
+              await prisma.$$disconnect();
             }
-            await prisma.\\\$disconnect();
-          })();
-        \" || exit 1;
-        echo '✅ Database initialization complete!';
+          }
+          
+          createAdmin();
+        ' && echo '✅ Database initialization complete!' || exit 1;
       "
     restart: "no"
 
