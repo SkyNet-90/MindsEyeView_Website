@@ -14,17 +14,18 @@ export default function AboutPage() {
           About <span className="text-primary-500">Mind's Eye View</span>
         </h1>
 
-        <div className="grid md:grid-cols-2 gap-12 mb-16">
-          <div className="rounded-lg overflow-x-auto overflow-y-hidden shadow-2xl bg-rock-darker">
+        <div className="mb-12">
+          <div className="rounded-lg overflow-hidden shadow-2xl mb-8">
             <Image
               src="/images/band-photo.jpg"
               alt="Mind's Eye View Band"
               width={1080}
               height={608}
-              className="w-full min-w-[600px] md:min-w-0 h-auto"
+              className="w-full h-auto"
+              priority
             />
           </div>
-          <div className="space-y-6 text-lg text-gray-300">
+          <div className="space-y-6 text-lg text-gray-300 max-w-4xl mx-auto">
             <p>
               <strong className="text-white">Mind's Eye View</strong> is a six-piece high energy classic rock band 
               playing music from the 60's through the 2000's. They have been performing in the tri-state area 
