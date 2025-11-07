@@ -1,23 +1,6 @@
 version: '3.8'
 
 services:
-  db-init:
-    image: ghcr.io/skynet-90/mindseyeview_website:latest
-    container_name: mindseyeview-db-init
-    user: root
-    environment:
-      - DATABASE_URL=postgresql://mindseyeview:${DB_PASSWORD}@mindseyeview-db:5432/mindseyeview
-      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@mindseyeview.net}
-      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-ChangeMe123!}
-      - ADMIN_NAME=${ADMIN_NAME:-Admin}
-    depends_on:
-      mindseyeview-db:
-        condition: service_healthy
-    networks:
-      - mindseyeview-net
-    command: ["/app/scripts/init-db.sh"]
-    restart: "no"
-
   mindseyeview-app:
     image: ghcr.io/skynet-90/mindseyeview_website:latest
     container_name: mindseyeview-web
@@ -36,8 +19,6 @@ services:
     depends_on:
       mindseyeview-db:
         condition: service_healthy
-      db-init:
-        condition: service_completed_successfully
       git-sync:
         condition: service_started
     networks:
