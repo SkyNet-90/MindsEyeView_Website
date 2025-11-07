@@ -15,13 +15,13 @@ export default function AboutPage() {
         </h1>
 
         <div className="grid md:grid-cols-2 gap-12 mb-16">
-          <div className="rounded-lg overflow-hidden shadow-2xl">
+          <div className="rounded-lg overflow-x-auto overflow-y-hidden shadow-2xl bg-rock-darker">
             <Image
               src="/images/band-photo.jpg"
               alt="Mind's Eye View Band"
-              width={800}
-              height={600}
-              className="w-full h-auto"
+              width={1080}
+              height={608}
+              className="w-full min-w-[600px] md:min-w-0 h-auto"
             />
           </div>
           <div className="space-y-6 text-lg text-gray-300">
