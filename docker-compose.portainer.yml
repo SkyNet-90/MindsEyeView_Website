@@ -1,6 +1,50 @@
 version: '3.8'
 
 services:
+  db-init:
+    image: ghcr.io/skynet-90/mindseyeview_website:latest
+    container_name: mindseyeview-db-init
+    environment:
+      - DATABASE_URL=postgresql://mindseyeview:${DB_PASSWORD}@mindseyeview-db:5432/mindseyeview
+      - ADMIN_EMAIL=${ADMIN_EMAIL:-admin@mindseyeview.net}
+      - ADMIN_PASSWORD=${ADMIN_PASSWORD:-ChangeMe123!}
+      - ADMIN_NAME=${ADMIN_NAME:-Admin}
+    depends_on:
+      mindseyeview-db:
+        condition: service_healthy
+    networks:
+      - mindseyeview-net
+    command: >
+      sh -c "
+        echo '🔧 Initializing database...';
+        npm run db:push || exit 1;
+        echo '👤 Creating admin user if not exists...';
+        node -e \"
+          const { PrismaClient } = require('@prisma/client');
+          const bcrypt = require('bcryptjs');
+          const prisma = new PrismaClient();
+          (async () => {
+            const existing = await prisma.adminUser.findUnique({ where: { email: process.env.ADMIN_EMAIL } });
+            if (!existing) {
+              const hash = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
+              await prisma.adminUser.create({
+                data: {
+                  email: process.env.ADMIN_EMAIL,
+                  name: process.env.ADMIN_NAME,
+                  passwordHash: hash
+                }
+              });
+              console.log('✅ Admin user created:', process.env.ADMIN_EMAIL);
+            } else {
+              console.log('ℹ️  Admin user already exists');
+            }
+            await prisma.\\\$disconnect();
+          })();
+        \" || exit 1;
+        echo '✅ Database initialization complete!';
+      "
+    restart: "no"
+
   mindseyeview-app:
     image: ghcr.io/skynet-90/mindseyeview_website:latest
     container_name: mindseyeview-web
@@ -19,6 +63,8 @@ services:
     depends_on:
       mindseyeview-db:
         condition: service_healthy
+      db-init:
+        condition: service_completed_successfully
       git-sync:
         condition: service_started
     networks:
