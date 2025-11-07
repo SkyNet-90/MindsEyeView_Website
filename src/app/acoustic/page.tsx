@@ -1,6 +1,8 @@
 import { Metadata } from 'next'
 import { VideoGallery } from '@/components/VideoGallery'
 
+export const dynamic = 'force-dynamic'
+
 export const metadata: Metadata = {
   title: 'Acoustic Duo',
   description: "Mind's Eye View acoustic duo featuring Sean Bradley and Mike Markiewicz playing classic acoustic hits.",

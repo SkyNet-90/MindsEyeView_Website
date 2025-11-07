@@ -7,7 +7,12 @@ export const metadata: Metadata = {
   description: "View photos and videos of Mind's Eye View performances. Watch our live shows and see the energy we bring to every event.",
 }
 
-export default function GalleryPage() {
+import { prisma } from '@/lib/prisma'
+import Image from 'next/image'
+
+export const dynamic = 'force-dynamic'
+
+export default async function GalleryPage() {
   return (
     <div className="bg-rock-dark min-h-screen py-20">
       <div className="container mx-auto px-4 mb-12">

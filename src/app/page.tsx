@@ -5,6 +5,8 @@ import { UpcomingShows } from '@/components/UpcomingShows'
 import { VideoGallery } from '@/components/VideoGallery'
 import { NewsletterSignup } from '@/components/NewsletterSignup'
 
+export const dynamic = 'force-dynamic'
+
 export default function Home() {
   return (
     <div>

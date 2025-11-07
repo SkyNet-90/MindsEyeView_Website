@@ -6,7 +6,12 @@ export const metadata: Metadata = {
   description: "Check out Mind's Eye View upcoming performances and book your tickets for high energy classic rock shows.",
 }
 
-export default function ShowsPage() {
+import { prisma } from '@/lib/prisma'
+import { format } from 'date-fns'
+
+export const dynamic = 'force-dynamic'
+
+export default async function ShowsPage() {
   return (
     <div className="bg-rock-dark min-h-screen py-20">
       <div className="container mx-auto px-4 mb-12">
