@@ -106,14 +106,20 @@ networks:
 
 ### Step 4: Create Portainer Stack
 
-1. **In Portainer**, go to Stacks → Add Stack
-2. **Name**: `mindseyeview-website`
-3. **Build method**: Repository
-4. **Repository URL**: `https://github.com/YOUR_USERNAME/MindsEyeView_Website`
-5. **Repository reference**: `refs/heads/main`
-6. **Compose path**: `docker-compose.yml`
+**Important**: You're using self-hosted Portainer on your home lab server.
 
-**OR use Web editor with this compose file**:
+**Accessing Portainer:**
+- Typically at: `http://YOUR_SERVER_IP:9000` or `https://portainer.yourdomain.com`
+- If exposed via Cloudflare Tunnel, use your custom URL
+
+**Creating the Stack:**
+
+1. **In Portainer**, navigate to: Stacks → Add Stack
+2. **Name**: `mindseyeview-website`
+
+**Build Method Options:**
+
+**Option A: Web Editor (Recommended for Self-Hosted)**
 
 ```yaml
 version: '3.8'
@@ -174,15 +180,63 @@ openssl rand -base64 32
 
 ### Step 6: Set Up Portainer Webhook
 
-1. **In Portainer**, go to your stack → Webhooks
-2. **Create webhook** for the service
-3. **Copy the webhook URL** (looks like: `https://portainer.yourdomain.com/api/webhooks/xxx`)
+**For Self-Hosted Portainer, you have two deployment options:**
 
-4. **Add to GitHub Secrets**:
-   - Go to your GitHub repo → Settings → Secrets and variables → Actions
-   - Click "New repository secret"
+**Option A: Webhook Auto-Deploy** (requires webhook to be accessible from GitHub)
+
+1. **In Portainer**, go to: Stacks → mindseyeview-website → Webhooks
+2. **Create a service webhook**
+3. **Copy the webhook URL** 
+   - Format: `http://YOUR_PORTAINER_IP:9000/api/webhooks/WEBHOOK_ID`
+   
+4. **Expose webhook to GitHub**:
+   
+   **If Portainer is only on local network:**
+   - You'll need to expose the webhook endpoint via:
+     - Cloudflare Tunnel (add to ingress rules)
+     - Reverse proxy (nginx, Traefik, etc.)
+     - Port forwarding (less secure)
+   
+   **Example Cloudflare Tunnel config**:
+   ```yaml
+   ingress:
+     - hostname: portainer-webhook.yourdomain.com
+       service: http://localhost:9000
+     - hostname: mindseyeview.net
+       service: http://localhost:3000
+     - service: http_status:404
+   ```
+
+5. **Add to GitHub Secrets**:
+   - Go to: Repository → Settings → Secrets and variables → Actions
+   - Click: "New repository secret"
    - Name: `PORTAINER_WEBHOOK_URL`
-   - Value: Your webhook URL from Portainer
+   - Value: Your publicly accessible webhook URL
+     - Example: `https://portainer-webhook.yourdomain.com/api/webhooks/xxxxx`
+
+**Option B: Manual Deployment** (simpler for local Portainer)
+
+If exposing the webhook is too complex, use manual deployment:
+
+1. **In Portainer**, enable "Git auto-update" for the stack:
+   - Edit stack settings
+   - Enable "Auto update" 
+   - Set polling interval (e.g., 5 minutes)
+   
+2. **Or manually update**:
+   - Push changes to GitHub
+   - In Portainer: Go to stack → Click "Pull and redeploy"
+   - Takes ~30 seconds
+
+**Option C: Local Webhook** (if you self-trigger updates)
+
+1. Set up webhook in Portainer
+2. Save webhook URL (local network only)
+3. Trigger manually from your local network:
+   ```bash
+   curl -X POST http://YOUR_PORTAINER_IP:9000/api/webhooks/xxxxx
+   ```
+4. Skip GitHub secrets step - webhook remains internal
 
 ### Step 7: Initialize Database
 

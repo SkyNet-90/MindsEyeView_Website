@@ -11,16 +11,19 @@ git add .
 git commit -m "Initial deployment"
 
 # Create repo on GitHub, then:
-git remote add origin https://github.com/YOUR_USERNAME/MindsEyeView_Website.git
+git remote add origin https://github.com/SkyNet-90/MindsEyeView_Website.git
 git branch -M main
 git push -u origin main
 ```
 
 ## 2️⃣ Set Up Portainer Stack (10 minutes)
 
-1. Open Portainer
-2. Create new stack: "mindseyeview"
-3. Paste this compose file:
+**Note**: You're using self-hosted Portainer, so you'll access it at your own URL (e.g., `http://your-server-ip:9000` or `https://portainer.yourdomain.com`)
+
+1. **Open your Portainer** instance
+2. **Go to**: Stacks → Add Stack
+3. **Name**: `mindseyeview`
+4. **Paste this compose file**:
 
 ```yaml
 version: '3.8'
@@ -58,9 +61,14 @@ volumes:
   postgres_data:
 ```
 
-4. **Generate NEXTAUTH_SECRET**: Run `openssl rand -base64 32`
-5. Replace placeholders in the compose file
-6. Deploy the stack
+**Important for Self-Hosted Portainer:**
+- Replace `YOUR_GITHUB_USERNAME` with `skynet-90` (your GitHub username)
+- Generate strong `YOUR_DB_PASSWORD`
+- Generate `NEXTAUTH_SECRET`: Run `openssl rand -base64 32` in terminal
+- Update `NEXTAUTH_URL` to your actual domain
+
+4. **Deploy the stack**
+5. **Verify containers are running**: Check Portainer dashboard
 
 ## 3️⃣ Set Up Cloudflare Tunnel (15 minutes)
 
@@ -97,6 +105,36 @@ exit
 ```
 
 ## 5️⃣ Set Up Auto-Deploy (5 minutes)
+
+**For Self-Hosted Portainer:**
+
+1. **In Portainer**, go to your stack → Click the stack name → Scroll to "Webhooks"
+2. **Create Service Webhook**:
+   - Click "Add webhook"
+   - Copy the webhook URL (e.g., `http://your-portainer-ip:9000/api/webhooks/xxxxx`)
+   
+   **Important**: If your Portainer is only accessible internally, you have two options:
+   
+   **Option A - Expose Portainer webhook** (if safe on your network):
+   - Make sure the webhook URL is accessible from GitHub Actions
+   - You may need to expose it via Cloudflare Tunnel or similar
+   
+   **Option B - Manual deployment** (simpler):
+   - Skip the webhook setup
+   - Update manually: In Portainer, click stack → "Pull and redeploy"
+   - Or use Portainer's git auto-update feature
+
+3. **Add to GitHub Secrets** (if using Option A):
+   - Go to your GitHub repo → Settings → Secrets and variables → Actions
+   - Click "New repository secret"
+   - Name: `PORTAINER_WEBHOOK_URL`
+   - Value: Your webhook URL
+   
+4. **Test it**: Make a small change, commit, and push:
+   ```bash
+   git commit --allow-empty -m "Test auto-deploy"
+   git push
+   ```
 
 1. Go to your Portainer stack → Webhooks
 2. Create webhook, copy URL
