@@ -63,6 +63,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modul
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/prisma ./prisma
 
+# Copy initialization scripts
+COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
+RUN chmod +x /app/scripts/*.sh
+
 # Create uploads directory
 RUN mkdir -p /app/public/uploads
 RUN chown nextjs:nodejs /app/public/uploads
