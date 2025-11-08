@@ -17,9 +17,8 @@ export default function AcousticPage() {
             Mind's Eye View <span className="text-primary-500">Acoustic</span>
           </h1>
           <p className="text-xl text-gray-300 mb-6">
-            Mind's Eye View acoustic band consists of 2 members from our full band, 
-            <strong className="text-white"> Sean Bradley</strong> and 
-            <strong className="text-white"> Mike Markiewicz</strong>.
+            Mind's Eye View acoustic band consists of 2 members from our full band,{' '}
+            <strong className="text-white">Sean Bradley and Mike Markiewicz</strong>.
           </p>
           <p className="text-xl text-gray-300 mb-8">
             We play classic acoustic hits that resonate with all ages. When our acoustic duo performs 
@@ -34,7 +33,7 @@ export default function AcousticPage() {
         </div>
       </section>
 
-      <VideoGallery acousticOnly={false} />
+      <VideoGallery acousticOnly={true} />
 
       <section className="py-20 bg-rock-darker">
         <div className="container mx-auto px-4 max-w-4xl">

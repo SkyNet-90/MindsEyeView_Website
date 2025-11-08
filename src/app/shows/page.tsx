@@ -1,17 +1,29 @@
 import { Metadata } from 'next'
 import { UpcomingShows } from '@/components/UpcomingShows'
+import { PastShows } from '@/components/PastShows'
+import { prisma } from '@/lib/prisma'
 
 export const metadata: Metadata = {
   title: 'Upcoming Shows',
   description: "Check out Mind's Eye View upcoming performances and book your tickets for high energy classic rock shows.",
 }
 
-import { prisma } from '@/lib/prisma'
-import { format } from 'date-fns'
-
 export const dynamic = 'force-dynamic'
 
 export default async function ShowsPage() {
+  // Fetch past events
+  const pastEvents = await prisma.event.findMany({
+    where: {
+      eventDate: {
+        lt: new Date(),
+      },
+    },
+    orderBy: {
+      eventDate: 'desc',
+    },
+    take: 20,
+  })
+
   return (
     <div className="bg-rock-dark min-h-screen py-20">
       <div className="container mx-auto px-4 mb-12">
@@ -24,6 +36,7 @@ export default async function ShowsPage() {
         </p>
       </div>
       <UpcomingShows />
+      <PastShows pastEvents={JSON.parse(JSON.stringify(pastEvents))} />
     </div>
   )
 }

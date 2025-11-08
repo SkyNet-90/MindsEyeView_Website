@@ -41,34 +41,7 @@ export default function AboutPage() {
           </div>
         </div>
 
-        <div className="bg-rock-light rounded-lg p-8 md:p-12 mb-16">
-          <h2 className="text-3xl font-display font-bold mb-6 text-center">
-            <span className="text-primary-500">Acoustic</span> Duo
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8 items-center">
-            <div className="text-gray-300 space-y-4">
-              <p className="text-lg">
-                Mind's Eye View acoustic band consists of 2 members from our full band, 
-                <strong className="text-white"> Sean Bradley</strong> and 
-                <strong className="text-white"> Mike Markiewicz</strong>.
-              </p>
-              <p className="text-lg">
-                We play classic acoustic hits that resonate with all ages. When our acoustic duo performs 
-                at your event, you can be sure everyone will recognize and love the music.
-              </p>
-            </div>
-            <div className="text-center">
-              <a
-                href="/acoustic"
-                className="inline-block bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-colors"
-              >
-                Learn More About Our Acoustic Duo
-              </a>
-            </div>
-          </div>
-        </div>
-
-        <div className="text-center">
+        <div className="text-center mt-16">
           <h2 className="text-3xl font-display font-bold mb-6">
             Book Us for Your Event
           </h2>

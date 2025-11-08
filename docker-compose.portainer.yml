@@ -12,7 +12,7 @@ services:
       - DATABASE_URL=postgresql://mindseyeview:${DB_PASSWORD}@mindseyeview-db:5432/mindseyeview
       - NEXTAUTH_URL=https://mindseyeview.net
       - NEXTAUTH_SECRET=${NEXTAUTH_SECRET}
-      - NEXT_PUBLIC_FACEBOOK_URL=https://www.facebook.com/profile.php?id=100066853654284
+      - NEXT_PUBLIC_FACEBOOK_URL=https://www.facebook.com/minds.e.view
       - TZ=America/New_York
     volumes:
       - uploads_data:/app/public/uploads

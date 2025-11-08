@@ -45,7 +45,7 @@ This guide walks you through deploying the Mind's Eye View website using Portain
    ADMIN_EMAIL=admin@mindseyeview.net
    ADMIN_PASSWORD=CHANGE_THIS_PASSWORD
    NEXT_PUBLIC_SITE_URL=https://mindseyeview.net
-   NEXT_PUBLIC_FACEBOOK_URL=https://www.facebook.com/profile.php?id=100066853654284
+   NEXT_PUBLIC_FACEBOOK_URL=https://www.facebook.com/minds.e.view
    ```
 
 3. **Generate secure secrets**:

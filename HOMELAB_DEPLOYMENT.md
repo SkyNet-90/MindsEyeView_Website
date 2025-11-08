@@ -136,7 +136,7 @@ services:
       DATABASE_URL: postgresql://mindseyeview:CHANGE_THIS_PASSWORD@mindseyeview-db:5432/mindseyeview
       NEXTAUTH_URL: https://mindseyeview.net
       NEXTAUTH_SECRET: GENERATE_A_RANDOM_SECRET_HERE
-      NEXT_PUBLIC_FACEBOOK_URL: https://www.facebook.com/profile.php?id=100066853654284
+      NEXT_PUBLIC_FACEBOOK_URL: https://www.facebook.com/minds.e.view
     volumes:
       - ./uploads:/app/public/uploads
     networks:

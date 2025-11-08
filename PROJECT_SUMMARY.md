@@ -350,7 +350,7 @@ These features can be added later:
 
 **Website Admin**: admin@mindseyeview.net  
 **Band Contact**: info@mindseyeview.net  
-**Facebook**: https://www.facebook.com/profile.php?id=100066853654284  
+**Facebook**: https://www.facebook.com/minds.e.view  
 
 ## License & Copyright
 

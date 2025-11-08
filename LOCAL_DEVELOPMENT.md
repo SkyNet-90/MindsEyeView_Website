@@ -26,7 +26,7 @@ Your `.env` should contain:
 DATABASE_URL="postgresql://postgres:password@localhost:5432/mindseyeview"
 NEXTAUTH_URL="http://localhost:3000"
 NEXTAUTH_SECRET="your-secret-here"
-NEXT_PUBLIC_FACEBOOK_URL="https://www.facebook.com/profile.php?id=100066853654284"
+NEXT_PUBLIC_FACEBOOK_URL="https://www.facebook.com/minds.e.view"
 ```
 
 ### 4. Generate a NEXTAUTH_SECRET:
