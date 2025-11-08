@@ -1,6 +1,6 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
+import { useSession, signOut } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import Link from 'next/link'
@@ -14,6 +14,10 @@ export default function AdminDashboard() {
       router.push('/admin/login')
     }
   }, [status, router])
+
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: '/' })
+  }
 
   if (status === 'loading') {
     return (
@@ -36,12 +40,12 @@ export default function AdminDashboard() {
           </h1>
           <div className="flex items-center gap-4">
             <span className="text-gray-400">Welcome, {session.user?.email}</span>
-            <Link
-              href="/api/auth/signout"
+            <button
+              onClick={handleLogout}
               className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition-colors"
             >
               Logout
-            </Link>
+            </button>
           </div>
         </div>
       </div>
