@@ -50,9 +50,6 @@ ENV NEXT_TELEMETRY_DISABLED=1
 RUN addgroup --system --gid 1001 nodejs
 RUN adduser --system --uid 1001 nextjs
 
-# Copy public assets
-COPY --from=builder /app/public ./public
-
 # Set the correct permission for prerender cache
 RUN mkdir .next
 RUN chown nextjs:nodejs .next
@@ -60,6 +57,9 @@ RUN chown nextjs:nodejs .next
 # Automatically leverage output traces to reduce image size
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
+
+# Copy public assets (standalone mode requires this to be after standalone copy)
+COPY --from=builder --chown=nextjs:nodejs /app/public ./public
 
 # Copy Prisma files for runtime
 COPY --from=builder --chown=nextjs:nodejs /app/node_modules/.prisma ./node_modules/.prisma
@@ -70,9 +70,9 @@ COPY --from=builder /app/prisma ./prisma
 COPY --from=builder --chown=nextjs:nodejs /app/scripts ./scripts
 RUN chmod +x /app/scripts/*.sh
 
-# Create uploads directory
-RUN mkdir -p /app/public/uploads
-RUN chown nextjs:nodejs /app/public/uploads
+# Create uploads directory with correct permissions
+RUN mkdir -p /app/public/uploads/photos
+RUN chown -R nextjs:nodejs /app/public/uploads
 
 USER nextjs
 
