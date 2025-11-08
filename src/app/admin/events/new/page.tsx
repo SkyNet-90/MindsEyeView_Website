@@ -198,7 +198,7 @@ export default function NewEventPage() {
             </div>
             <div>
               <label htmlFor="eventTime" className="block text-sm font-medium mb-2">
-                Time * (or type manually)
+                Time * <span className="text-gray-400 text-xs">(Eastern Time - Use your preferred format)</span>
               </label>
               <input
                 type="time"
@@ -209,6 +209,7 @@ export default function NewEventPage() {
                 required
                 className="w-full px-4 py-3 rounded-lg bg-rock-darker border border-gray-700 text-white focus:outline-none focus:border-primary-500"
               />
+              <p className="text-xs text-gray-500 mt-1">Browser will display in your local time format</p>
             </div>
           </div>
 
