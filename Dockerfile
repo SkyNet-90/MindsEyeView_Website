@@ -28,7 +28,10 @@ ENV NODE_ENV=production
 ENV DATABASE_URL="postgresql://placeholder:placeholder@localhost:5432/placeholder"
 ENV NEXTAUTH_URL="http://localhost:3000"
 ENV NEXTAUTH_SECRET="build-time-secret-replace-at-runtime"
-ENV NEXT_PUBLIC_FACEBOOK_URL="https://www.facebook.com"
+
+# Accept Facebook URL as build arg and set as env var for Next.js build
+ARG NEXT_PUBLIC_FACEBOOK_URL=https://www.facebook.com/minds.e.view
+ENV NEXT_PUBLIC_FACEBOOK_URL=$NEXT_PUBLIC_FACEBOOK_URL
 
 # Generate Prisma Client
 RUN npx prisma generate
