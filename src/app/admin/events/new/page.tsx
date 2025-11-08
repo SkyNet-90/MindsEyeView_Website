@@ -20,6 +20,7 @@ export default function NewEventPage() {
     address: '',
     eventDate: '',
     eventTime: '',
+    endTime: '',
     ticketUrl: '',
     isAcoustic: false,
   })
@@ -49,6 +50,9 @@ export default function NewEventPage() {
 
     try {
       const eventDateTime = `${formData.eventDate}T${formData.eventTime}:00`
+      const endDateTime = formData.endTime 
+        ? `${formData.eventDate}T${formData.endTime}:00`
+        : undefined
       
       const response = await fetch('/api/admin/events', {
         method: 'POST',
@@ -58,6 +62,7 @@ export default function NewEventPage() {
         body: JSON.stringify({
           ...formData,
           eventDate: eventDateTime,
+          endDate: endDateTime,
         }),
       })
 
@@ -70,6 +75,7 @@ export default function NewEventPage() {
           address: '',
           eventDate: '',
           eventTime: '',
+          endTime: '',
           ticketUrl: '',
           isAcoustic: false,
         })
@@ -196,9 +202,12 @@ export default function NewEventPage() {
                 className="w-full px-4 py-3 rounded-lg bg-rock-darker border border-gray-700 text-white focus:outline-none focus:border-primary-500"
               />
             </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-4">
             <div>
               <label htmlFor="eventTime" className="block text-sm font-medium mb-2">
-                Time * <span className="text-gray-400 text-xs">(Eastern Time - Use your preferred format)</span>
+                Start Time * <span className="text-gray-400 text-xs">(Eastern Time)</span>
               </label>
               <input
                 type="time"
@@ -210,6 +219,20 @@ export default function NewEventPage() {
                 className="w-full px-4 py-3 rounded-lg bg-rock-darker border border-gray-700 text-white focus:outline-none focus:border-primary-500"
               />
               <p className="text-xs text-gray-500 mt-1">Browser will display in your local time format</p>
+            </div>
+            <div>
+              <label htmlFor="endTime" className="block text-sm font-medium mb-2">
+                End Time <span className="text-gray-400 text-xs">(Optional)</span>
+              </label>
+              <input
+                type="time"
+                id="endTime"
+                name="endTime"
+                value={formData.endTime}
+                onChange={handleChange}
+                className="w-full px-4 py-3 rounded-lg bg-rock-darker border border-gray-700 text-white focus:outline-none focus:border-primary-500"
+              />
+              <p className="text-xs text-gray-500 mt-1">Leave blank if no specific end time</p>
             </div>
           </div>
 
