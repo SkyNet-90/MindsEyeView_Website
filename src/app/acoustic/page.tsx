@@ -18,18 +18,19 @@ export default function AcousticPage() {
             Mind's Eye View <span className="text-primary-500">Acoustic</span>
           </h1>
           
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <div className="relative h-96 rounded-lg overflow-hidden shadow-2xl">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
+            <div className="w-full order-2 md:order-1">
               <Image
                 src="/images/sean-mike-acoustic.jpg"
                 alt="Sean Bradley and Mike Markiewicz - Acoustic Duo"
-                fill
-                className="object-cover"
+                width={600}
+                height={450}
+                className="w-full h-auto object-contain rounded-lg shadow-2xl"
                 priority
               />
             </div>
             
-            <div className="space-y-6">
+            <div className="space-y-6 order-1 md:order-2">
               <p className="text-xl text-gray-300">
                 Mind's Eye View acoustic band consists of 2 members from our full band,{' '}
                 <strong className="text-white">Sean Bradley and Mike Markiewicz</strong>.
