@@ -180,9 +180,8 @@ export default function NewEventPage() {
               timeFormat="HH:mm"
               timeIntervals={15}
               dateFormat="MMMM d, yyyy h:mm aa"
-              minDate={new Date()}
               className="w-full px-4 py-3 rounded-lg bg-rock-darker border border-gray-700 text-white focus:outline-none focus:border-primary-500"
-              placeholderText="Click to select date and time"
+              placeholderText="Click to select date and time (past or future)"
               calendarClassName="dark-calendar"
             />
           </div>

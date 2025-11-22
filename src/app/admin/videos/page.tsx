@@ -222,12 +222,20 @@ export default function AdminVideosPage() {
                         </span>
                       )}
                     </div>
+                  <div className="flex gap-2 justify-end">
+                    <Link
+                      href={`/admin/videos/${video.id}/edit`}
+                      className="text-blue-400 hover:text-blue-300 text-sm"
+                    >
+                      Edit
+                    </Link>
                     <button
                       onClick={() => deleteVideo(video.id)}
                       className="text-red-500 hover:text-red-400 text-sm"
                     >
                       Delete
                     </button>
+                  </div>
                   </div>
                 </div>
               </div>

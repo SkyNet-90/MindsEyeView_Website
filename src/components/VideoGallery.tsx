@@ -7,8 +7,13 @@ interface VideoGalleryProps {
 }
 
 export async function VideoGallery({ limit, acousticOnly }: VideoGalleryProps) {
+  // Default to showing full band videos only (exclude acoustic) unless acousticOnly is explicitly true
+  const where = acousticOnly === true 
+    ? { isAcoustic: true }
+    : { isAcoustic: false };
+  
   const videos = await prisma.video.findMany({
-    where: acousticOnly !== undefined ? { isAcoustic: acousticOnly } : undefined,
+    where,
     orderBy: {
       displayOrder: 'asc',
     },

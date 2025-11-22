@@ -69,10 +69,21 @@ export default function ContactPage() {
             <h2 className="text-3xl font-display font-bold mb-4">Contact Information</h2>
             <div className="space-y-4 text-gray-300">
               <div>
-                <h3 className="font-semibold text-white mb-1">Email</h3>
-                <a href="mailto:info@mindseyeview.net" className="text-primary-400 hover:text-primary-300">
-                  info@mindseyeview.net
-                </a>
+                <h3 className="font-semibold text-white mb-1">Bookings</h3>
+                <div className="space-y-2">
+                  <div>
+                    <p className="text-sm text-gray-400 mb-1">Email:</p>
+                    <a href="mailto:bookings@mindseyeview.net" className="text-primary-400 hover:text-primary-300">
+                      bookings@mindseyeview.net
+                    </a>
+                  </div>
+                  <div>
+                    <p className="text-sm text-gray-400 mb-1">Sean Bradley:</p>
+                    <a href="tel:610-470-4166" className="text-primary-400 hover:text-primary-300">
+                      610-470-4166
+                    </a>
+                  </div>
+                </div>
               </div>
               <div>
                 <h3 className="font-semibold text-white mb-1">Social Media</h3>
