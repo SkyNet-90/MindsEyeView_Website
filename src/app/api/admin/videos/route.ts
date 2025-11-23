@@ -40,6 +40,8 @@ export async function POST(request: NextRequest) {
     
     if (url.includes('youtube.com/watch?v=')) {
       youtubeId = url.split('v=')[1].split('&')[0]
+    } else if (url.includes('youtube.com/shorts/')) {
+      youtubeId = url.split('shorts/')[1].split('?')[0]
     } else if (url.includes('youtu.be/')) {
       youtubeId = url.split('youtu.be/')[1].split('?')[0]
     } else {
