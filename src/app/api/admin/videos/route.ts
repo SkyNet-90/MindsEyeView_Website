@@ -41,17 +41,21 @@ export async function POST(request: NextRequest) {
     if (url.includes('youtube.com/watch?v=')) {
       youtubeId = url.split('v=')[1].split('&')[0]
     } else if (url.includes('youtube.com/shorts/')) {
-      youtubeId = url.split('shorts/')[1].split('?')[0]
+      youtubeId = url.split('shorts/')[1].split('?')[0].split('&')[0]
     } else if (url.includes('youtu.be/')) {
-      youtubeId = url.split('youtu.be/')[1].split('?')[0]
+      youtubeId = url.split('youtu.be/')[1].split('?')[0].split('&')[0]
     } else {
-      return NextResponse.json({ error: 'Invalid YouTube URL' }, { status: 400 })
+      return NextResponse.json({ error: 'Invalid YouTube URL format' }, { status: 400 })
+    }
+
+    if (!youtubeId || youtubeId.length === 0) {
+      return NextResponse.json({ error: 'Could not extract video ID from URL' }, { status: 400 })
     }
 
     const video = await prisma.video.create({
       data: {
-        title: data.title,
-        description: data.description,
+        title: data.title || '',
+        description: data.description || '',
         youtubeUrl: data.youtubeUrl,
         youtubeId: youtubeId,
         isAcoustic: data.isAcoustic || false,
@@ -62,6 +66,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(video)
   } catch (error) {
     console.error('Error creating video:', error)
-    return NextResponse.json({ error: 'Failed to create video' }, { status: 500 })
+    return NextResponse.json({ error: `Failed to create video: ${error instanceof Error ? error.message : 'Unknown error'}` }, { status: 500 })
   }
 }

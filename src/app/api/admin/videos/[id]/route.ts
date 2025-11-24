@@ -43,18 +43,22 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     if (url.includes('youtube.com/watch?v=')) {
       youtubeId = url.split('v=')[1].split('&')[0]
     } else if (url.includes('youtube.com/shorts/')) {
-      youtubeId = url.split('shorts/')[1].split('?')[0]
+      youtubeId = url.split('shorts/')[1].split('?')[0].split('&')[0]
     } else if (url.includes('youtu.be/')) {
-      youtubeId = url.split('youtu.be/')[1].split('?')[0]
+      youtubeId = url.split('youtu.be/')[1].split('?')[0].split('&')[0]
     } else {
-      return NextResponse.json({ error: 'Invalid YouTube URL' }, { status: 400 })
+      return NextResponse.json({ error: 'Invalid YouTube URL format' }, { status: 400 })
+    }
+
+    if (!youtubeId || youtubeId.length === 0) {
+      return NextResponse.json({ error: 'Could not extract video ID from URL' }, { status: 400 })
     }
 
     const video = await prisma.video.update({
       where: { id: parseInt(params.id) },
       data: {
-        title: data.title,
-        description: data.description,
+        title: data.title || '',
+        description: data.description || '',
         youtubeUrl: data.youtubeUrl,
         youtubeId: youtubeId,
         isAcoustic: data.isAcoustic || false,
@@ -65,7 +69,7 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
     return NextResponse.json(video)
   } catch (error) {
     console.error('Error updating video:', error)
-    return NextResponse.json({ error: 'Failed to update video' }, { status: 500 })
+    return NextResponse.json({ error: `Failed to update video: ${error instanceof Error ? error.message : 'Unknown error'}` }, { status: 500 })
   }
 }
 
