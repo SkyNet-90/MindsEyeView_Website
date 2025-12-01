@@ -218,7 +218,7 @@ Most things you can change yourself in the admin panel. If you can't find it:
 
 1. Check this guide again
 2. Email your web administrator
-3. Contact: info@mindseyeview.net
+3. Contact: bookings@mindseyeview.net
 
 ### Website Issues?
 

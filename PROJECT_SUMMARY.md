@@ -42,7 +42,7 @@ A complete, production-ready website for Mind's Eye View, a classic rock band ce
 
 6. **Contact Page** (`/contact`)
    - Contact form
-   - Email: info@mindseyeview.net
+   - Email: bookings@mindseyeview.net
    - Facebook and YouTube links
    - Event type selection
 
@@ -349,7 +349,7 @@ These features can be added later:
 ## Support & Contacts
 
 **Website Admin**: admin@mindseyeview.net  
-**Band Contact**: info@mindseyeview.net  
+**Band Contact**: bookings@mindseyeview.net  
 **Facebook**: https://www.facebook.com/minds.e.view  
 
 ## License & Copyright

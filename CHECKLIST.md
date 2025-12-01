@@ -259,7 +259,7 @@ Use this checklist to ensure a smooth deployment of the Mind's Eye View website.
 - **DNS/Domain**: _________________
 - **Cloudflare**: support@cloudflare.com
 - **Developer**: _________________
-- **Band Contact**: info@mindseyeview.net
+- **Band Contact**: bookings@mindseyeview.net
 
 ## Rollback Plan
 

@@ -332,7 +332,7 @@ docker-compose up -d --build
 ## Support
 
 For issues or questions:
-- Email: info@mindseyeview.net
+- Email: bookings@mindseyeview.net
 - Facebook: https://www.facebook.com/minds.e.view
 
 ## License

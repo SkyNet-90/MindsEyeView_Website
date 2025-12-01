@@ -77,8 +77,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <a href="mailto:info@mindseyeview.net" className="text-gray-400 hover:text-primary-500 transition-colors">
-                  info@mindseyeview.net
+                <a href="mailto:bookings@mindseyeview.net" className="text-gray-400 hover:text-primary-500 transition-colors">
+                  bookings@mindseyeview.net
                 </a>
               </li>
             </ul>

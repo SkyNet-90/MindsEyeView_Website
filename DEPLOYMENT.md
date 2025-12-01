@@ -346,4 +346,4 @@ If you encounter issues:
 - Check logs first
 - Review Portainer container stats
 - Verify Cloudflare tunnel status
-- Contact: info@mindseyeview.net
+- Contact: bookings@mindseyeview.net
